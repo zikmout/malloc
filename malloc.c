@@ -22,14 +22,45 @@ void		init_ts(t_zone **begin) {
 	zone->zleft = TZMAX_SIZE;
 	zone->next = NULL;
 
-	printf("g_e.tiny->addr => %p\n", g_e.tiny);
-
 	*begin = zone;
+}
+
+void		new_alloc(t_zone **zcur, t_head **hcur, size_t size) {
+
+	t_head	*end;
+
+	write(1, "*******-----> debug\n", 21);
+
+	end = (void *)*(hcur) + size;
+	(*zcur)->zleft = (*zcur)->zleft - size - sizeof(*end);
+	end->addr = end + sizeof(*end);
+	end->size = (*zcur)->zleft;
+	end->empty = 1;
+	end->next = NULL;
+
+	(*hcur)->empty = 0;
+	(*hcur)->size = size;
+	(*hcur)->next = end;
 }
 
 void		*malloc(size_t size) {
 
-	printf("MALLOC SIZE -> %zu\n", size);
+	t_zone	*zcur;
+	t_head	*hcur;
+
+	zcur = g_e.tiny;
+	while (zcur) {
+		hcur = zcur->entry;
+		while (hcur) {
+			if (hcur->empty == 1 && hcur->size >= size + sizeof(*hcur)) {
+				write(1, "-> new alloc\n", 13);
+				new_alloc(&zcur, &hcur, size);
+				return hcur->addr;
+			}
+			hcur = hcur->next;
+		}
+		zcur = zcur->next;
+	}
 	return NULL;
 }
 
@@ -43,18 +74,18 @@ void		print_zone(t_zone *begin) {
 	zhead = begin;
 	while (zhead) {
 		printf("---> Zone %zu\n", nb);
-		printf("zone itself => %p\n", zhead);
+		printf("zone itelf => %p\n", zhead);
 		printf("zone->entry => %p\n", zhead->entry);
 		printf("zone->zleft => %zu\n", zhead->zleft);
 		printf("zone->next => %p\n\n", zhead->next);
 
 		cur = zhead->entry;
 		while (cur) {
-			printf("     cur itself => %p\n", cur);
+			printf("     cur itelf => %p\n", cur);
 			printf("     cur->addr => %p\n", cur->addr);
 			printf("     cur->empty => %d\n", cur->empty);
 			printf("     cur->size => %zu\n", cur->size);
-			printf("     cur->next => %p\n", cur->next);
+			printf("     cur->next => %p\n\n", cur->next);
 			cur = cur->next;
 		}
 		zhead = zhead->next;

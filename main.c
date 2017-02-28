@@ -7,12 +7,14 @@
 int main(void) {
 
 	init_ts(&g_e.tiny);
-	init_ts(&g_e.small);
 	printf("g_e.tiny->addr => %p\n", g_e.tiny);
-	printf("g_e.small->addr => %p\n", g_e.small);
+	printf("initial zone->zleft => %zu\n", g_e.tiny->zleft);
 
 	malloc(4000);
+	malloc(2000);
+	malloc(2000);
+	malloc(50);
+	malloc(10);
 	print_zone(g_e.tiny);
-	print_zone(g_e.small);
 	return 0;
 }
