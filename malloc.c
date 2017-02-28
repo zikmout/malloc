@@ -43,25 +43,21 @@ void		new_alloc(t_zone **zcur, t_head **hcur, size_t size) {
 	(*hcur)->next = end;
 }
 
-void		new_zone_alloc(t_zone **zcur, size_t size) {
+void		*new_zone_alloc(t_zone **zcur, size_t size) {
 
 	size_t	zone_size;
 
-	printf("New Zone Alloc ... because zone->zleft => %zu\n", (*zcur)->zleft);
 	(size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
 	init_ts(&(*zcur)->next, zone_size);
-	printf("zcur->next itself == %p\n", ((t_head *)((*zcur)->next)));
-	printf("zcur->next addr == %p\n", (((*zcur)->next->entry))->addr);
 	new_alloc(&(*zcur)->next, &((*zcur)->next->entry), size);
+	return ((*zcur)->next->entry->addr);
 }
 
 void		*malloc(size_t size) {
 
 	t_zone	*zcur;
 	t_head	*hcur;
-	size_t	zone_size;
 
-	zone_size = 0;
 	zcur = g_e.tiny;
 	while (zcur) {
 		hcur = zcur->entry;
@@ -77,9 +73,8 @@ void		*malloc(size_t size) {
 			break ;
 		zcur = zcur->next;
 	}
-	(size >= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
-	new_zone_alloc(&zcur, size);
-	return NULL;
+	return new_zone_alloc(&zcur, size);
+	//return NULL;
 }
 
 void		print_zone(t_zone *begin) {

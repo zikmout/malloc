@@ -12,9 +12,8 @@ int main(void) {
 
 	malloc(4000);
 	malloc(2000);
-	malloc(2000);
-	malloc(4000);
-	malloc(80);
+	printf("malloc de 2000 return ======>>> %p\n", malloc(2000));
+	printf("malloc de 96 return ======>>> %p\n", malloc(96));
 	print_zone(g_e.tiny);
 	return 0;
 }
