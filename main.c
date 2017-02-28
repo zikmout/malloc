@@ -7,6 +7,7 @@
 int main(void) {
 
 	init_ts(&g_e.tiny, TZMAX_SIZE);
+	init_ts(&g_e.small, SZMAX_SIZE);
 	printf("g_e.tiny->addr => %p\n", g_e.tiny);
 	printf("initial zone->zleft => %zu\n", g_e.tiny->zleft);
 
@@ -14,6 +15,12 @@ int main(void) {
 	malloc(2000);
 	printf("malloc de 2000 return ======>>> %p\n", malloc(2000));
 	printf("malloc de 96 return ======>>> %p\n", malloc(96));
+	malloc(4041);
+	malloc(150000);
+	malloc(133333);
+	printf("g_e.large->addr => %p\n", g_e.large);
+	print_large(g_e.large);
 	print_zone(g_e.tiny);
+	print_zone(g_e.small);
 	return 0;
 }

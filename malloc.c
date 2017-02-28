@@ -53,12 +53,43 @@ void		*new_zone_alloc(t_zone **zcur, size_t size) {
 	return ((*zcur)->next->entry->addr);
 }
 
+t_head		*list_find_end(t_head *begin) {
+
+	if (!begin->next)
+		return begin;
+	else
+		return list_find_end(begin->next);
+}
+
+void		*malloc_large(size_t size) {
+
+	t_head	*hcur;
+	void	*ptr;
+
+	ptr = mmap(NULL, size + 32, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+
+	hcur = ptr;
+	hcur->addr = hcur + sizeof(*hcur);
+	hcur->empty = 0;
+	hcur->size = size;
+	hcur->next = NULL;
+
+	if (g_e.large == NULL)
+		g_e.large = hcur;
+	else
+		list_find_end(g_e.large)->next = hcur;
+
+	return hcur->addr;
+}
+
 void		*malloc(size_t size) {
 
 	t_zone	*zcur;
 	t_head	*hcur;
 
-	zcur = g_e.tiny;
+	if (size > SMAX_SIZE)
+		return malloc_large(size);
+	(size <= TMAX_SIZE) ? (zcur = g_e.tiny) : (zcur = g_e.small);
 	while (zcur) {
 		hcur = zcur->entry;
 		while (hcur) {
@@ -74,7 +105,6 @@ void		*malloc(size_t size) {
 		zcur = zcur->next;
 	}
 	return new_zone_alloc(&zcur, size);
-	//return NULL;
 }
 
 void		print_zone(t_zone *begin) {
@@ -105,3 +135,55 @@ void		print_zone(t_zone *begin) {
 		zhead = zhead->next;
 	}
 }
+
+void		print_large(t_head *begin) {
+
+	t_head *hcur;
+
+	hcur = begin;
+	while (hcur) {
+		printf("     LARGEhcur itelf => %p\n", hcur);
+		printf("     LARGEhcur->addr => %p\n", hcur->addr);
+		printf("     LARGEhcur->empty => %d\n", hcur->empty);
+		printf("     LARGEhcur->size => %zu\n", hcur->size);
+		printf("     LARGEhcur->next => %p\n\n", hcur->next);
+		hcur = hcur->next;
+	}
+}
+
+/*
+typedef char    *(*psf)(struct s_params *, char *, char *, size_t);
+
+void    init_ptab(psf **tab)
+{
+	*tab = (psf*)malloc(sizeof(psf) * 14);
+
+	(*tab)[0] = &ft_1;
+	(*tab)[1] = &ft_2;
+	(*tab)[2] = &ft_3;
+	(*tab)[3] = &ft_4;
+	(*tab)[4] = &ft_5;
+	(*tab)[5] = &ft_6;
+	(*tab)[6] = &ft_7;
+	(*tab)[7] = &ft_8;
+	(*tab)[8] = &ft_9;
+	(*tab)[9] = &ft_10;
+	(*tab)[10] = &ft_11;
+	(*tab)[11] = &ft_12;
+	(*tab)[12] = &ft_13;
+	(*tab)[13] = &ft_14;
+}
+
+
+psf    *p_tab;
+    init_ptab(&p_tab);
+while (i <= 13)
+{
+	if (i == code - 1)
+	{
+		str = (*(p_tab[i]))(p, flags, str, len);
+		break ;
+	}
+	i = i + 1;
+}
+*/

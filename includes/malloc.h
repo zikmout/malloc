@@ -1,13 +1,13 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 # define PAGE_SIZE getpagesize()
-# define TMAX_SIZE 4040 // 1024 - 32
+# define TMAX_SIZE 4040 // 1024 - 32 - 24
 //# define TMAX_SIZE 992 // 1024 - 32
 # define TNB 2048
 # define TZMAX_SIZE (size_t)4 * TNB
 //# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
-# define SMAX_SIZE 131040 // 131072 - 32
+# define SMAX_SIZE 131040 // 131072 - 32 - 24
 # define SNB 128
 # define SZMAX_SIZE (size_t)((SMAX_SIZE + 32) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
 
@@ -17,7 +17,7 @@
 #include <sys/mman.h>
 #include <stdbool.h>
 #include "../libft/libft.h"
-
+//typedef char *(*psf)(struct s_params *, char *, char *, size_t);
 //word = 8 bytes (64bit architecture)
 typedef struct s_head t_head;
 struct s_head
@@ -51,5 +51,9 @@ void	init_ts(t_zone **zone, size_t zone_size);
 void	*malloc(size_t size);
 void	print_zone(t_zone *begin);
 void	*new_zone_alloc(t_zone **zcur, size_t size);
+void	*malloc_large(size_t size);
+void	print_large(t_head *begin);
+t_head	*list_find_end(t_head *begin);
+//void        init_ptab(psf **tab);
 
 #endif
