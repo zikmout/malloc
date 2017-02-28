@@ -1,25 +1,25 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
-void		init_ts(t_zone **begin) {
+void		init_ts(t_zone **begin, size_t zone_size) {
 
 	void	*ptr;
 	t_head	*head;
 	t_zone	*zone;
 
 	head = NULL;
-	ptr = mmap(NULL, TZMAX_SIZE, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	ptr = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 
 	zone = ptr;
 
-	head = ptr + sizeof(*g_e.tiny);
+	head = ptr + sizeof(*(*begin));
 	head->addr = head + sizeof(*head);
 	head->empty = 1;
-	head->size = TZMAX_SIZE;
+	head->size = zone_size;
 	head->next = NULL;
 
 	zone->entry = head;
-	zone->zleft = TZMAX_SIZE;
+	zone->zleft = zone_size;
 	zone->next = NULL;
 
 	*begin = zone;
@@ -43,6 +43,14 @@ void		new_alloc(t_zone **zcur, t_head **hcur, size_t size) {
 	(*hcur)->next = end;
 }
 
+void		new_zone_alloc(t_zone **zcur, size_t size) {
+
+	size_t	zone_size;
+
+	(size >= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
+	printf("New Zone Alloc ... because zone->zleft => %zu\n", (*zcur)->zleft);
+}
+
 void		*malloc(size_t size) {
 
 	t_zone	*zcur;
@@ -59,8 +67,11 @@ void		*malloc(size_t size) {
 			}
 			hcur = hcur->next;
 		}
+		if (zcur->next == NULL)
+			break ;
 		zcur = zcur->next;
 	}
+	new_zone_alloc(&zcur, size);
 	return NULL;
 }
 

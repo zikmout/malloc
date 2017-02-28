@@ -6,15 +6,14 @@
 
 int main(void) {
 
-	init_ts(&g_e.tiny);
+	init_ts(&g_e.tiny, TZMAX_SIZE);
 	printf("g_e.tiny->addr => %p\n", g_e.tiny);
 	printf("initial zone->zleft => %zu\n", g_e.tiny->zleft);
 
 	malloc(4000);
 	malloc(2000);
 	malloc(2000);
-	malloc(50);
-	malloc(10);
+	malloc(4000);
 	print_zone(g_e.tiny);
 	return 0;
 }

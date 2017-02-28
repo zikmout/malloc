@@ -47,8 +47,9 @@ struct s_env
 
 t_env g_e;
 
-void	init_ts(t_zone **zone);
+void	init_ts(t_zone **zone, size_t zone_size);
 void	*malloc(size_t size);
 void	print_zone(t_zone *begin);
+void	new_zone_alloc(t_zone **zcur, size_t size);
 
 #endif
