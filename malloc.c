@@ -1,7 +1,7 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
-t_zone		*init_ts(void) {
+void		init_ts(t_zone **begin) {
 
 	void	*ptr;
 	t_head	*head;
@@ -22,7 +22,9 @@ t_zone		*init_ts(void) {
 	zone->zleft = TZMAX_SIZE;
 	zone->next = NULL;
 
-	return zone;
+	printf("g_e.tiny->addr => %p\n", g_e.tiny);
+
+	*begin = zone;
 }
 
 void		*malloc(size_t size) {
