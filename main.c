@@ -14,6 +14,7 @@ int main(void) {
 	malloc(2000);
 	malloc(2000);
 	malloc(4000);
+	malloc(80);
 	print_zone(g_e.tiny);
 	return 0;
 }
