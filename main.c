@@ -9,12 +9,61 @@ int main(void) {
 	init_ts(&g_e.tiny, TZMAX_SIZE);
 	init_ts(&g_e.small, SZMAX_SIZE);
 	printf("g_e.tiny->addr => %p\n", g_e.tiny);
+	printf("g_e.small->addr => %p\n", g_e.small);
 	//printf("initial zone->zleft => %zu\n", g_e.tiny->zleft);
 
 	//malloc(4000);
 	//malloc(2000);
 	//printf("malloc de 2000 return ======>>> %p\n", malloc(2000));
 	//printf("malloc de 96 return ======>>> %p\n", malloc(96));
+
+	//void *rea;
+	//void *ptr;
+
+	malloc(4000);
+
+	//free(rea);
+
+	malloc(3900);
+
+	//rea = realloc(ptr, 4001);
+
+	//free(rea);
+
+	malloc(1000);
+
+	print_zone(g_e.tiny);
+	/* TEST LOCATE FUNCTION
+	void *ptrl;
+	void *ptrs;
+	void *ptrt;
+
+	ptrl = malloc(150000);
+	ptrs = malloc(5000);
+	ptrt = malloc(400);
+
+	t_zone *test;
+	test = NULL;
+
+	printf("PTR Large = %p\n", ptrl);
+
+
+	printf("PTR Small = %p\n", ptrs);
+	printf("PTR Small locate size = %zu\n", ((t_head *)(locate(g_e.small, &test, ptrs)))->size);
+	printf("PTR Small locate zone = %p\n", test);
+
+
+	printf("PTR Tiny = %p\n", ptrt);
+	printf("PTR Tiny locate size = %zu\n", ((t_head *)(locate(g_e.tiny, &test, ptrt)))->size);
+	printf("PTR Tiny locate zone = %p\n", test);
+
+
+	print_large(g_e.large);
+	print_zone(g_e.small);
+	print_zone(g_e.tiny);
+	*/
+
+	/*
 	void *ptr = NULL;
 
 	ptr = malloc(50);
@@ -42,5 +91,6 @@ int main(void) {
 	print_large(g_e.large);
 	//print_zone(g_e.small);
 	print_zone(g_e.tiny);
+	*/
 	return 0;
 }

@@ -1,6 +1,64 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
+void		*realloc(void *ptr, size_t size) {
+
+	t_zone	*test;
+	t_head	*found;
+
+	found = locate(g_e.tiny, &test, ptr);
+	if (found && test) {
+		printf("Its a tiny\n");
+		if (found->size >= size) {
+			found->empty = (int)size;
+			return found->addr;
+		}
+		else if (found->size < size) {
+			free(ptr);
+			return malloc(size);
+		}
+		return NULL;
+	}
+	/*
+	found = locate(g_e.small, &test, ptr);
+	if (found && test) {
+		printf("Its a small\n");
+		return NULL;
+	}
+	*/
+	return NULL;
+}
+
+
+
+void		*locate(t_zone *begin, t_zone **head, void *ptr) {
+
+	t_zone	*zcur;
+	t_head	*hcur;
+
+	zcur = begin;
+	while (zcur) {
+		hcur = zcur->entry;
+		while (hcur) {
+			if (hcur->addr == ptr) {
+				*head = zcur;
+				return hcur;
+			}
+			hcur = hcur->next;
+		}
+		zcur = zcur->next;
+	}
+	return NULL;
+}
+
+void		*realloc_large(void *ptr, size_t size) {
+
+	size = 35;
+	ptr = NULL;
+
+	return NULL;
+}
+
 void		free(void *ptr) {
 
 	t_head	*found;
@@ -48,7 +106,6 @@ t_head		*parse_large(t_head *begin, void *ptr) {
 			else if (hcur->next == NULL) {
 				printf("(fin) HCUR SIZE ----> %zu\n", hcur->size);
 				if (hcur_prev == NULL) {
-					//personne apres ni avant //printf("(fin seul memem) HCUR SIZE ----> %zu\n", hcur->size);
 					printf("Retour mmap %d\n", munmap((void *)(g_e.large), hcur->size + sizeof(*hcur)));
 					g_e.large = NULL;
 					return NULL;
@@ -77,9 +134,7 @@ t_head		*parse_ts(t_zone *begin, void *ptr) {
 
 	t_zone	*zcur;
 	t_head	*hcur;
-	size_t	stop;
 
-	stop = 0;
 	zcur = begin;
 	while (zcur) {
 		hcur = zcur->entry;
@@ -127,6 +182,7 @@ void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 
 	write(1, "EE*****-----> debug\n", 21);
 	end = (void *)(*(hcur) + size);
+	//end = (void *)(*(hcur) + size);
 	(*zcur)->zleft = (*zcur)->zleft - size - sizeof(*end);
 	end->addr = end + sizeof(*end);
 	end->size = (*zcur)->zleft;
@@ -144,6 +200,8 @@ void		*new_zone_alloc(t_zone **zcur, size_t size) {
 
 	(size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
 	init_ts(&(*zcur)->next, zone_size);
+	write(1, "ZZ*****-----> debug\n", 21);
+	print_zone(g_e.tiny);
 	new_alloc_end(&(*zcur)->next, &((*zcur)->next->entry), size);
 	return ((*zcur)->next->entry->addr);
 }
