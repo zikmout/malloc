@@ -6,6 +6,7 @@ void		*realloc(void *ptr, size_t size) {
 	t_zone	*test;
 	t_head	*found;
 
+	printf("******** REALLOC of pointer -> %p for size %zu\n", ptr, size);
 	found = locate(g_e.tiny, &test, ptr);
 	if (found && test) {
 		printf("Its a tiny\n");
@@ -62,7 +63,7 @@ void		*realloc_large(void *ptr, size_t size) {
 void		free(void *ptr) {
 
 	t_head	*found;
-
+	printf("******** FREE of pointer -> %p\n", ptr);
 	if (g_e.tiny) {
 		found = parse_ts(g_e.tiny, ptr);
 		if (found) {
@@ -141,8 +142,10 @@ t_head		*parse_ts(t_zone *begin, void *ptr) {
 		while (hcur) {
 			if (hcur->addr == ptr) {
 				hcur->empty = 1;
-				zcur->zleft = zcur->zleft + hcur->size;
+
+//				if (hcur->next == NULL)
 				list_find_end(hcur)->size = zcur->zleft;
+				//zcur->zleft = zcur->zleft + hcur->size;
 				return hcur;
 			}
 			hcur = hcur->next;
@@ -181,10 +184,11 @@ void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 	t_head	*end;
 
 	write(1, "EE*****-----> debug\n", 21);
-	end = (void *)(*(hcur) + size);
+	end = (void *)*(hcur) + size;
 	//end = (void *)(*(hcur) + size);
 	(*zcur)->zleft = (*zcur)->zleft - size - sizeof(*end);
 	end->addr = end + sizeof(*end);
+
 	end->size = (*zcur)->zleft;
 	end->empty = 1;
 	end->next = NULL;
@@ -240,6 +244,7 @@ void		*malloc(size_t size) {
 	t_zone	*zcur;
 	t_head	*hcur;
 
+	printf("******** MALLOC of size -> %zu\n", size);
 	if (size > SMAX_SIZE)
 		return malloc_large(size);
 	(size <= TMAX_SIZE) ? (zcur = g_e.tiny) : (zcur = g_e.small);
@@ -252,8 +257,11 @@ void		*malloc(size_t size) {
 				return hcur->addr;
 			}
 			else if (hcur->next && hcur->empty == 1 && hcur->size >= size) {
+				print_zone(g_e.tiny);
 				write(1, "-> new alloc middle\n", 20);
-				hcur->empty = size;
+				hcur->empty = (int)size;
+				//zcur->zleft = zcur->zleft - size;
+				//list_find_end(hcur)->size = zcur->zleft;
 				return hcur->addr;
 			}
 			hcur = hcur->next;
