@@ -54,6 +54,10 @@ void	*new_zone_alloc(t_zone **zcur, size_t size);
 void	*malloc_large(size_t size);
 void	print_large(t_head *begin);
 t_head	*list_find_end(t_head *begin);
+void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
 //void        init_ptab(psf **tab);
+t_head	*parse_large(t_head *begin, void *ptr);
+t_head	*parse_ts(t_zone *begin, void *ptr);
+void	free(void *ptr);
 
 #endif

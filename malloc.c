@@ -1,6 +1,102 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
+void		free(void *ptr) {
+
+	t_head	*found;
+
+	if (g_e.tiny) {
+		found = parse_ts(g_e.tiny, ptr);
+		if (found) {
+			printf("T-Return of parse_ts size ===> %zu\n", found->size);
+			return ;
+		}
+	}
+	if (g_e.small) {
+		found = parse_ts(g_e.small, ptr);
+		if (found) {
+			printf("S-Return of parse_ts size ===> %zu\n", found->size);
+			return ;
+		}
+	}
+	if (g_e.large) {
+		found = parse_large(g_e.large, ptr);
+		if (found) {
+			printf("L-Return of parse_ts size ===> %zu\n", found->size);
+			return ;
+		}
+	}
+}
+
+t_head		*parse_large(t_head *begin, void *ptr) {
+
+	t_head	*hcur;
+	t_head	*hcur_prev;
+	t_head	*tmp;
+
+	tmp = NULL;
+	hcur_prev = NULL;
+	hcur = begin;
+	while (hcur) {
+		if (hcur->addr == ptr) {
+			if (hcur_prev != NULL && hcur->next != NULL) {
+				printf("(middle) HCUR PREV ----> %zu\n", hcur_prev->size);
+				hcur_prev->next = hcur->next;
+				printf("Retour mmap %d\n", munmap((void *)(hcur), hcur->size + sizeof(*hcur)));
+				return NULL;
+			}
+			else if (hcur->next == NULL) {
+				printf("(fin) HCUR SIZE ----> %zu\n", hcur->size);
+				if (hcur_prev == NULL) {
+					//personne apres ni avant //printf("(fin seul memem) HCUR SIZE ----> %zu\n", hcur->size);
+					printf("Retour mmap %d\n", munmap((void *)(g_e.large), hcur->size + sizeof(*hcur)));
+					g_e.large = NULL;
+					return NULL;
+				}
+				else {
+					hcur_prev->next = NULL;
+					printf("Retour mmap %d\n", munmap((void *)(hcur), hcur->size + sizeof(*hcur)));
+					return NULL;
+				}
+				return NULL;
+			}
+			else {
+				printf("(debut) HCUR SIZE ----> %zu\n", hcur->size);
+				g_e.large = hcur->next;
+				printf("Retour mmap %d\n", munmap((void *)(hcur), hcur->size + sizeof(*hcur)));
+				return NULL;
+			}
+		}
+		hcur_prev = hcur;
+		hcur = hcur->next;
+	}
+	return NULL;
+}
+
+t_head		*parse_ts(t_zone *begin, void *ptr) {
+
+	t_zone	*zcur;
+	t_head	*hcur;
+	size_t	stop;
+
+	stop = 0;
+	zcur = begin;
+	while (zcur) {
+		hcur = zcur->entry;
+		while (hcur) {
+			if (hcur->addr == ptr) {
+				hcur->empty = 1;
+				zcur->zleft = zcur->zleft + hcur->size;
+				list_find_end(hcur)->size = zcur->zleft;
+				return hcur;
+			}
+			hcur = hcur->next;
+		}
+		zcur = zcur->next;
+	}
+	return NULL;
+}
+
 void		init_ts(t_zone **begin, size_t zone_size) {
 
 	void	*ptr;
@@ -25,13 +121,12 @@ void		init_ts(t_zone **begin, size_t zone_size) {
 	*begin = zone;
 }
 
-void		new_alloc(t_zone **zcur, t_head **hcur, size_t size) {
+void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 
 	t_head	*end;
 
-	write(1, "*******-----> debug\n", 21);
-
-	end = (void *)*(hcur) + size;
+	write(1, "EE*****-----> debug\n", 21);
+	end = (void *)(*(hcur) + size);
 	(*zcur)->zleft = (*zcur)->zleft - size - sizeof(*end);
 	end->addr = end + sizeof(*end);
 	end->size = (*zcur)->zleft;
@@ -49,7 +144,7 @@ void		*new_zone_alloc(t_zone **zcur, size_t size) {
 
 	(size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
 	init_ts(&(*zcur)->next, zone_size);
-	new_alloc(&(*zcur)->next, &((*zcur)->next->entry), size);
+	new_alloc_end(&(*zcur)->next, &((*zcur)->next->entry), size);
 	return ((*zcur)->next->entry->addr);
 }
 
@@ -93,9 +188,14 @@ void		*malloc(size_t size) {
 	while (zcur) {
 		hcur = zcur->entry;
 		while (hcur) {
-			if (hcur->empty == 1 && hcur->size >= size + sizeof(*hcur)) {
-				write(1, "-> new alloc\n", 13);
-				new_alloc(&zcur, &hcur, size);
+			if (!hcur->next && hcur->empty == 1 && hcur->size >= size + sizeof(*hcur)) {
+				write(1, "-> new alloc end\n", 14);
+				new_alloc_end(&zcur, &hcur, size);
+				return hcur->addr;
+			}
+			else if (hcur->next && hcur->empty == 1 && hcur->size >= size) {
+				write(1, "-> new alloc middle\n", 20);
+				hcur->empty = size;
 				return hcur->addr;
 			}
 			hcur = hcur->next;
