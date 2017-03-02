@@ -6,14 +6,41 @@
 
 int main(void) {
 
-	printf("g_e.tiny->addr => %p\n", g_e.tiny);
-	printf("g_e.small->addr => %p\n", g_e.small);
-	//printf("initial zone->zleft => %zu\n", g_e.tiny->zleft);
 
-	//malloc(4000);
-	//malloc(2000);
-	//printf("malloc de 2000 return ======>>> %p\n", malloc(2000));
-	//printf("malloc de 96 return ======>>> %p\n", malloc(96));
+	void *rea1 = NULL;
+	//void *rea2 = NULL;
+	//void *rea3 = NULL;
+	//void *rea4 = NULL;
+
+	rea1 = malloc(1000000);
+	//rea2 = malloc(110000);
+	//rea3 = malloc(120000);
+	//free(rea3);
+	//rea3 = malloc(90000);
+	//rea4 = malloc(130000);
+
+	free(rea1);
+	//free(rea2);
+	//free(rea3);
+	//free(rea4);
+	//ptr = malloc(3900);
+	//rea3 = malloc(90000);
+	//free(rea3);
+
+	//malloc(150000);
+
+	//rea = realloc(ptr, 4001);
+
+	//free(rea);
+
+	print_zone(g_e.tiny);
+	print_zone(g_e.small);
+	print_large(g_e.large);
+
+
+
+
+	/* ---- SMALL TESTING MALLOC & FREE
 
 	void *rea1 = NULL;
 	void *rea2 = NULL;
@@ -44,6 +71,9 @@ int main(void) {
 	print_zone(g_e.tiny);
 	print_zone(g_e.small);
 	print_large(g_e.large);
+
+	*/
+
 	//malloc(3333);
 	//malloc(4002);
 	//print_zone(g_e.small);

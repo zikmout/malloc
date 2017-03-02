@@ -172,7 +172,6 @@ void		*realloc_large(void *ptr, size_t size) {
 	return NULL;
 }
 
-
 t_head		*locate(t_zone *begin, t_zone **head, void *ptr) {
 
 	t_zone	*zcur;
@@ -217,7 +216,7 @@ void		check_fusion(t_zone *test, t_head *found) {
 			(zone_size <= TZMAX_SIZE) ? (g_e.tiny = NULL) : (g_e.small = NULL);
 		}
 	}
-	else {
+	else { //can be reduced here
 		if (found->prev && found->prev->empty == 1) {
 			found->prev->next = found->next;
 			found->prev->size = found->prev->size + found->size;
@@ -227,8 +226,8 @@ void		check_fusion(t_zone *test, t_head *found) {
 		if (found->next && found->next->empty == 1) {
 
 			found->prev->next = found->next;
-			found->next->prev = found->prev;
 			found->next->size = found->next->size + found->size;
+			found->next->prev = found->prev;
 			test->zleft = test->zleft + sizeof(*found);
 		}
 	}
@@ -252,5 +251,13 @@ void		free(void *ptr) {
 		found->empty = 1;
 		check_fusion(test, found);
 		return ;
+	}
+	found = g_e.large;
+	while (found) {
+		if (found->addr == ptr) {
+			printf("found large ptr = %p and size = %zu\n", ptr, found->size);
+			return ;
+		}
+		found = found->next;
 	}
 }
