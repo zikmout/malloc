@@ -7,7 +7,7 @@
 # define TZMAX_SIZE (size_t)(4 * TNB) // 8192 - 24= 8136
 //# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
-# define SMAX_SIZE 131040 // 131072 - 32 - 24
+# define SMAX_SIZE (size_t)131032 // 131072 - 32 - 24
 # define SNB 128
 # define SZMAX_SIZE (size_t)((SMAX_SIZE + 40) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
 

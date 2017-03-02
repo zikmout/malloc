@@ -20,19 +20,22 @@ int main(void) {
 	void *rea3 = NULL;
 	void *rea4 = NULL;
 
-	rea1 = malloc(100);
-	rea2 = malloc(200);
-	rea3 = malloc(300);
-	rea4 = malloc(400);
+	rea1 = malloc(100000);
+	rea2 = malloc(110000);
+	rea3 = malloc(120000);
+	//free(rea3);
+	//rea3 = malloc(90000);
+	rea4 = malloc(130000);
 
 	free(rea1);
 	free(rea2);
 	free(rea3);
-	free(rea4);
+	//free(rea4);
 	//ptr = malloc(3900);
-	malloc(3333);
+	//rea3 = malloc(90000);
+	//free(rea3);
 
-	malloc(150000);
+	//malloc(150000);
 
 	//rea = realloc(ptr, 4001);
 

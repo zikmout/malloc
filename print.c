@@ -48,7 +48,6 @@ void		print_large(t_head *begin) {
 	nb = 0;
 	hcur = begin;
 	while (hcur) {
-
 		printf("\n---> *LARGEZone %zu\n", nb);
 		printf("*LARGEhcur itelf => %p\n", hcur);
 		printf("*LARGEhcur->addr => %p\n", hcur->addr);
@@ -64,12 +63,12 @@ void		init_all(size_t size) {
 
 	size_t	zone_size;
 
-	size = 0;
+	zone_size = 0;
 	(size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
 
-	if (zone_size == TZMAX_SIZE)
+	if (!g_e.tiny && zone_size == TZMAX_SIZE)
 		init_ts(&g_e.tiny, TZMAX_SIZE);
-	else if (zone_size == SZMAX_SIZE)
+	else if (!g_e.small && zone_size == SZMAX_SIZE)
 		init_ts(&g_e.small, SZMAX_SIZE);
 }
 

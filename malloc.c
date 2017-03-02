@@ -38,11 +38,11 @@ void		*malloc(size_t size) {
 
 	if (!size)
 		return NULL;
+	if (size > SMAX_SIZE)
+		return malloc_large(size);
 	else
 		init_all(size);
 	printf("******** MALLOC of size -> %zu\n", size);
-	if (size > SMAX_SIZE)
-		return malloc_large(size);
 	(size <= TMAX_SIZE) ? (zcur = g_e.tiny) : (zcur = g_e.small);
 
 	while (zcur) {
@@ -244,6 +244,13 @@ void		free(void *ptr) {
 		printf("found->size = %zu\n", found->size);
 		found->empty = 1;
 		check_fusion(test, found);
+		return ;
 	}
-
+	found = locate(g_e.small, &test, ptr);
+	if (found) {
+		printf("found->size = %zu\n", found->size);
+		found->empty = 1;
+		check_fusion(test, found);
+		return ;
+	}
 }
