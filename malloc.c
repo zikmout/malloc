@@ -1,9 +1,7 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
-
-
-void		*locate(t_zone *begin, t_zone **head, void *ptr) {
+t_head		*locate(t_zone *begin, t_zone **head, void *ptr) {
 
 	t_zone	*zcur;
 	t_head	*hcur;
@@ -21,6 +19,20 @@ void		*locate(t_zone *begin, t_zone **head, void *ptr) {
 		zcur = zcur->next;
 	}
 	return NULL;
+}
+
+void		free(void *ptr) {
+
+	t_zone	*test;
+	t_head	*found;
+
+	found = locate(g_e.tiny, &test, ptr);
+	if (found) {
+		printf("found->size = %zu\n", found->size);
+		found->empty = 1;
+		return ;
+	}
+
 }
 
 t_head		*parse_ts(t_zone *begin, void *ptr) {
@@ -75,8 +87,7 @@ void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 	t_head	*end;
 
 	write(1, "EE*****-----> debug\n", 21);
-	end = (void *)*(hcur) + size;
-	//end = (void *)(*(hcur) + size);
+	end = (void *)(*(hcur) + size);
 	(*zcur)->zleft = (*zcur)->zleft - size - sizeof(*end);
 	end->addr = end + sizeof(*end);
 
@@ -122,15 +133,19 @@ void		*malloc(size_t size) {
 	while (zcur) {
 		hcur = zcur->entry;
 		while (hcur) {
+
 			if (hcur->next && hcur->empty == 1 && hcur->size >= size) {
 				write(1, "-> new alloc middle\n", 20);
 				hcur->empty = (int)size;
 				return hcur->addr;
 			}
 			else if (!hcur->next && zcur->zleft >= size + sizeof(*hcur)) {
+				write(1, "-> new alloc end\n", 17);
+				printf("SIZE = %zu\n and zcur->zleft = %zu\n", size, zcur->zleft);
 				new_alloc_end(&zcur, &hcur, size);
 				return hcur->addr;
 			}
+
 			hcur = hcur->next;
 		}
 		if (zcur->next == NULL)
@@ -286,7 +301,7 @@ void		*realloc_large(void *ptr, size_t size) {
 
 	return NULL;
 }
-
+/*
 void		free(void *ptr) {
 
 	t_head	*found;
@@ -312,40 +327,5 @@ void		free(void *ptr) {
 			return ;
 		}
 	}
-}
-/*
-typedef char    *(*psf)(struct s_params *, char *, char *, size_t);
-
-void    init_ptab(psf **tab)
-{
-	*tab = (psf*)malloc(sizeof(psf) * 14);
-
-	(*tab)[0] = &ft_1;
-	(*tab)[1] = &ft_2;
-	(*tab)[2] = &ft_3;
-	(*tab)[3] = &ft_4;
-	(*tab)[4] = &ft_5;
-	(*tab)[5] = &ft_6;
-	(*tab)[6] = &ft_7;
-	(*tab)[7] = &ft_8;
-	(*tab)[8] = &ft_9;
-	(*tab)[9] = &ft_10;
-	(*tab)[10] = &ft_11;
-	(*tab)[11] = &ft_12;
-	(*tab)[12] = &ft_13;
-	(*tab)[13] = &ft_14;
-}
-
-
-psf    *p_tab;
-    init_ptab(&p_tab);
-while (i <= 13)
-{
-	if (i == code - 1)
-	{
-		str = (*(p_tab[i]))(p, flags, str, len);
-		break ;
-	}
-	i = i + 1;
 }
 */

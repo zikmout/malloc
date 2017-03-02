@@ -4,7 +4,7 @@
 # define TMAX_SIZE 4064 // 4096 -  32
 //# define TMAX_SIZE 992 // 1024 - 32
 # define TNB 2048
-# define TZMAX_SIZE (size_t)(4 * TNB - 24) // 8192 - 24 = 8136
+# define TZMAX_SIZE (size_t)(4 * TNB - 24 - 32) // 8192 - 24= 8136
 //# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
 # define SMAX_SIZE 131040 // 131072 - 32 - 24
@@ -17,7 +17,6 @@
 #include <sys/mman.h>
 #include <stdbool.h>
 #include "../libft/libft.h"
-//typedef char *(*psf)(struct s_params *, char *, char *, size_t);
 //word = 8 bytes (64bit architecture)
 typedef struct s_head t_head;
 struct s_head
@@ -55,11 +54,10 @@ void	*malloc_large(size_t size);
 void	print_large(t_head *begin);
 t_head	*list_find_end(t_head *begin);
 void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
-//void        init_ptab(psf **tab);
 t_head	*parse_large(t_head *begin, void *ptr);
 t_head	*parse_ts(t_zone *begin, void *ptr);
 void	free(void *ptr);
 void	*realloc_large(void *ptr, size_t size);
 
-void	*locate(t_zone *begin, t_zone **head, void *ptr);
+t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
 #endif

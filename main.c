@@ -17,14 +17,18 @@ int main(void) {
 	//printf("malloc de 2000 return ======>>> %p\n", malloc(2000));
 	//printf("malloc de 96 return ======>>> %p\n", malloc(96));
 
-	void *rea = NULL;
+	void *rea1 = NULL;
+	void *rea2 = NULL;
 	//void *ptr = NULL;
 
-	rea = malloc(4000);
-	rea = malloc(4000);
-	rea = malloc(40);
+	malloc(4000);
+	rea1 = malloc(4000);
+	rea2 = malloc(40);
+	malloc(1);
+	//rea = malloc(40);
 
-	//free(rea);
+	free(rea1);
+	free(rea2);
 
 	//ptr = malloc(3900);
 
@@ -37,6 +41,7 @@ int main(void) {
 	//malloc(4002);
 
 	print_zone(g_e.tiny);
+	//print_zone(g_e.small);
 	/* TEST LOCATE FUNCTION
 	void *ptrl;
 	void *ptrs;
