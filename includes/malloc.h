@@ -60,5 +60,8 @@ t_head	*parse_ts(t_zone *begin, void *ptr);
 void	free(void *ptr);
 void	*realloc_large(void *ptr, size_t size);
 
+void	free_zone(t_zone *to_free);
+void	check_fusion(t_zone *test, t_head *found);
+
 t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
 #endif
