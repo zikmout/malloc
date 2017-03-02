@@ -1,37 +1,6 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
-t_zone		*init_ts(t_zone **begin, size_t zone_size) {
-
-	void	*ptr;
-	t_head	*head;
-	t_zone	*zone;
-
-	head = NULL;
-	ptr = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-
-	zone = ptr;
-
-	head = ptr + sizeof(*(*begin));
-	head->addr = ptr + sizeof(*zone) + sizeof(*head);//head + sizeof(*head);
-	head->empty = 1;
-	head->size = zone_size - sizeof(*zone) - sizeof(*head);
-	head->next = NULL;
-	head->prev = NULL;
-
-	zone->entry = head;
-	zone->zleft = head->size;
-	zone->next = NULL;
-
-	if (*begin)
-	{
-		write(1, "--NewZone--\n", 12);
-		return zone;
-	}
-	*begin = zone;
-	return NULL;
-}
-
 void		*new_zone_alloc(t_zone **zcur, size_t size) {
 
 	size_t	zone_size;
@@ -69,6 +38,8 @@ void		*malloc(size_t size) {
 
 	if (!size)
 		return NULL;
+	else
+		init_all(size);
 	printf("******** MALLOC of size -> %zu\n", size);
 	if (size > SMAX_SIZE)
 		return malloc_large(size);
@@ -97,60 +68,6 @@ void		*malloc(size_t size) {
 	}
 
 	return new_zone_alloc(&zcur, size);
-}
-
-void		print_zone(t_zone *begin) {
-
-	t_zone *zhead;
-	t_head *cur;
-	size_t nb;
-
-	nb = 0;
-	zhead = begin;
-	while (zhead) {
-		printf("\n---> Zone %zu\n", nb);
-		printf("zone itelf => %p\n", zhead);
-		printf("zone->entry => %p\n", zhead->entry);
-		printf("zone->zleft => %zu\n", zhead->zleft);
-		printf("zone->next => %p\n\n", zhead->next);
-
-		cur = zhead->entry;
-		while (cur) {
-			printf("     cur itelf => %p\n", cur);
-			printf("     cur->addr => %p\n", cur->addr);
-			printf("     cur->empty => %d\n", cur->empty);
-			printf("     cur->size => %zu\n", cur->size);
-			printf("     cur->next => %p\n", cur->next);
-			printf("     cur->prev => %p\n\n", cur->prev);
-			cur = cur->next;
-		}
-		nb = nb + 1;
-		zhead = zhead->next;
-	}
-}
-
-
-t_head		*list_find_end(t_head *begin) {
-
-	if (!begin->next)
-		return begin;
-	else
-		return list_find_end(begin->next);
-}
-
-void		print_large(t_head *begin) {
-
-	t_head *hcur;
-
-	hcur = begin;
-	while (hcur) {
-		printf("     LARGEhcur itelf => %p\n", hcur);
-		printf("     LARGEhcur->addr => %p\n", hcur->addr);
-		printf("     LARGEhcur->empty => %d\n", hcur->empty);
-		printf("     LARGEhcur->size => %zu\n", hcur->size);
-		printf("     LARGEhcur->next => %p\n\n", hcur->next);
-		hcur = hcur->next;
-	}
 }
 
 void		*realloc(void *ptr, size_t size) {
@@ -276,14 +193,15 @@ t_head		*locate(t_zone *begin, t_zone **head, void *ptr) {
 	return NULL;
 }
 
-void		free_zone(t_zone *to_free) {
-
-
-
+int			free_zone(t_zone *to_free, size_t zone_size) {
+	return munmap(to_free, zone_size);
 }
 
 void		check_fusion(t_zone *test, t_head *found) {
 
+	size_t	zone_size;
+
+	zone_size = 0;
 	write(1, "ENTER -------------FUSION\n", 26);
 	if (found->prev && found->next && found->prev->empty == 1 && found->next->empty == 1) {
 
@@ -293,8 +211,10 @@ void		check_fusion(t_zone *test, t_head *found) {
 			found->next->next->prev = found->prev;
 		test->zleft = test->zleft + sizeof(*found) + sizeof(*found);
 		if (!found->prev->prev && !found->prev->next) {
+			(found->size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
 			printf("Vider la ZZZZZZZZZZZZZZZZZZZZZZZZZONOOOOONNNNE\n");
-			//free_zone(test);
+			printf("Retour de munmap = %d\n", free_zone(test, zone_size));
+			(zone_size <= TZMAX_SIZE) ? (g_e.tiny = NULL) : (g_e.small = NULL);
 		}
 	}
 	else {
@@ -327,55 +247,3 @@ void		free(void *ptr) {
 	}
 
 }
-
-t_head		*parse_ts(t_zone *begin, void *ptr) {
-
-	t_zone	*zcur;
-	t_head	*hcur;
-
-	zcur = begin;
-	while (zcur) {
-		hcur = zcur->entry;
-		while (hcur) {
-			if (hcur->addr == ptr) {
-				hcur->empty = 1;
-
-				list_find_end(hcur)->size = zcur->zleft;
-				//zcur->zleft = zcur->zleft + hcur->size;
-				return hcur;
-			}
-			hcur = hcur->next;
-		}
-		zcur = zcur->next;
-	}
-	return NULL;
-}
-
-/*
-   void		free(void *ptr) {
-
-   t_head	*found;
-   printf("******** FREE of pointer -> %p\n", ptr);
-   if (g_e.tiny) {
-   found = parse_ts(g_e.tiny, ptr);
-   if (found) {
-   printf("T-Return of parse_ts size ===> %zu\n", found->size);
-   return ;
-   }
-   }
-   if (g_e.small) {
-   found = parse_ts(g_e.small, ptr);
-   if (found) {
-   printf("S-Return of parse_ts size ===> %zu\n", found->size);
-   return ;
-   }
-   }
-   if (g_e.large) {
-   found = parse_large(g_e.large, ptr);
-   if (found) {
-   printf("L-Return of parse_ts size ===> %zu\n", found->size);
-   return ;
-   }
-   }
-   }
-   */

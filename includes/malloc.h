@@ -56,12 +56,12 @@ void	print_large(t_head *begin);
 t_head	*list_find_end(t_head *begin);
 void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
 t_head	*parse_large(t_head *begin, void *ptr);
-t_head	*parse_ts(t_zone *begin, void *ptr);
 void	free(void *ptr);
 void	*realloc_large(void *ptr, size_t size);
 
-void	free_zone(t_zone *to_free);
+int		free_zone(t_zone *to_free, size_t zone_size);
 void	check_fusion(t_zone *test, t_head *found);
+void	init_all(size_t size);
 
 t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
 #endif

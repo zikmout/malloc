@@ -8,7 +8,8 @@ LIB = libft/libft.a
 
 
 SRC =   main.c \
-		malloc.c
+		malloc.c \
+		print.c
 
 OBJ = $(SRC:.c=.o)
 
