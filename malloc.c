@@ -1,102 +1,7 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
-t_head		*locate(t_zone *begin, t_zone **head, void *ptr) {
-
-	t_zone	*zcur;
-	t_head	*hcur;
-
-	zcur = begin;
-	while (zcur) {
-		hcur = zcur->entry;
-		while (hcur) {
-			if (hcur->addr == ptr) {
-				*head = zcur;
-				return hcur;
-			}
-			hcur = hcur->next;
-		}
-		zcur = zcur->next;
-	}
-	return NULL;
-}
-/*
-void		free_zone(t_zone *to_free) {
-
-
-
-}
-*/
-void		check_fusion(t_zone *test, t_head *found) {
-
-	write(1, "ENTER -------------FUSION\n", 26);
-	if (found->prev && found->next && found->prev->empty == 1 && found->next->empty == 1) {
-
-		found->prev->next = found->next->next;
-		found->prev->size = found->prev->size + found->size + found->next->size;
-		if (found->next->next)
-			found->next->next->prev = found->prev;
-		test->zleft = test->zleft + sizeof(*found) + sizeof(*found);
-		if (!found->prev->prev && !found->prev->next) {
-			printf("Vider la ZZZZZZZZZZZZZZZZZZZZZZZZZONOOOOONNNNE\n");
-			//free_zone(test);
-		}
-	}
-	else {
-		if (found->prev && found->prev->empty == 1) {
-			found->prev->next = found->next;
-			found->prev->size = found->prev->size + found->size;
-			found->next->prev = found->prev;
-			test->zleft = test->zleft + sizeof(*found);
-		}
-		if (found->next && found->next->empty == 1) {
-
-			found->prev->next = found->next;
-			found->next->prev = found->prev;
-			found->next->size = found->next->size + found->size;
-			test->zleft = test->zleft + sizeof(*found);
-		}
-	}
-}
-
-void		free(void *ptr) {
-
-	t_zone	*test;
-	t_head	*found;
-
-	found = locate(g_e.tiny, &test, ptr);
-	if (found) {
-		printf("found->size = %zu\n", found->size);
-		found->empty = 1;
-		check_fusion(test, found);
-	}
-
-}
-
-t_head		*parse_ts(t_zone *begin, void *ptr) {
-
-	t_zone	*zcur;
-	t_head	*hcur;
-
-	zcur = begin;
-	while (zcur) {
-		hcur = zcur->entry;
-		while (hcur) {
-			if (hcur->addr == ptr) {
-				hcur->empty = 1;
-
-				list_find_end(hcur)->size = zcur->zleft;
-				//zcur->zleft = zcur->zleft + hcur->size;
-				return hcur;
-			}
-			hcur = hcur->next;
-		}
-		zcur = zcur->next;
-	}
-	return NULL;
-}
-
-void		init_ts(t_zone **begin, size_t zone_size) {
+t_zone		*init_ts(t_zone **begin, size_t zone_size) {
 
 	void	*ptr;
 	t_head	*head;
@@ -108,17 +13,23 @@ void		init_ts(t_zone **begin, size_t zone_size) {
 	zone = ptr;
 
 	head = ptr + sizeof(*(*begin));
-	head->addr = head + sizeof(*head);
+	head->addr = ptr + sizeof(*zone) + sizeof(*head);//head + sizeof(*head);
 	head->empty = 1;
-	head->size = zone_size;
+	head->size = zone_size - sizeof(*zone) - sizeof(*head);
 	head->next = NULL;
 	head->prev = NULL;
 
 	zone->entry = head;
-	zone->zleft = zone_size;
+	zone->zleft = head->size;
 	zone->next = NULL;
 
+	if (*begin)
+	{
+		write(1, "--NewZone--\n", 12);
+		return zone;
+	}
 	*begin = zone;
+	return NULL;
 }
 
 void		*new_zone_alloc(t_zone **zcur, size_t size) {
@@ -126,21 +37,21 @@ void		*new_zone_alloc(t_zone **zcur, size_t size) {
 	size_t	zone_size;
 
 	(size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
-	init_ts(&(*zcur)->next, zone_size);
+	(*zcur)->next = init_ts(zcur, zone_size);
 	write(1, "ZZ*****-----> debug\n", 21);
-	print_zone(g_e.tiny);
+	//print_zone(g_e.tiny);
 	new_alloc_end(&(*zcur)->next, &((*zcur)->next->entry), size);
-	return ((*zcur)->next->entry->addr);
+	return (((*zcur)->next)->entry->addr);
 }
 
 void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 
 	t_head	*end;
 
-	write(1, "EE*****-----> debug\n", 21);
-	end = *hcur + size;
+	end = (*hcur)->addr + size;
 	(*zcur)->zleft = (*zcur)->zleft - size - sizeof(*end);
-	end->addr = end + sizeof(*end);
+	write(1, "EE*****-----> debug\n", 21);
+	end->addr = (*hcur)->addr + size + sizeof(*end);
 	end->size = (*zcur)->zleft;
 	end->empty = 1;
 	end->next = NULL;
@@ -149,15 +60,6 @@ void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 	(*hcur)->empty = 0;
 	(*hcur)->size = size;
 	(*hcur)->next = end;
-}
-
-
-t_head		*list_find_end(t_head *begin) {
-
-	if (!begin->next)
-		return begin;
-	else
-		return list_find_end(begin->next);
 }
 
 void		*malloc(size_t size) {
@@ -225,6 +127,15 @@ void		print_zone(t_zone *begin) {
 		nb = nb + 1;
 		zhead = zhead->next;
 	}
+}
+
+
+t_head		*list_find_end(t_head *begin) {
+
+	if (!begin->next)
+		return begin;
+	else
+		return list_find_end(begin->next);
 }
 
 void		print_large(t_head *begin) {
@@ -343,6 +254,103 @@ void		*realloc_large(void *ptr, size_t size) {
 
 	return NULL;
 }
+
+
+t_head		*locate(t_zone *begin, t_zone **head, void *ptr) {
+
+	t_zone	*zcur;
+	t_head	*hcur;
+
+	zcur = begin;
+	while (zcur) {
+		hcur = zcur->entry;
+		while (hcur) {
+			if (hcur->addr == ptr) {
+				*head = zcur;
+				return hcur;
+			}
+			hcur = hcur->next;
+		}
+		zcur = zcur->next;
+	}
+	return NULL;
+}
+
+void		free_zone(t_zone *to_free) {
+
+
+
+}
+
+void		check_fusion(t_zone *test, t_head *found) {
+
+	write(1, "ENTER -------------FUSION\n", 26);
+	if (found->prev && found->next && found->prev->empty == 1 && found->next->empty == 1) {
+
+		found->prev->next = found->next->next;
+		found->prev->size = found->prev->size + found->size + found->next->size;
+		if (found->next->next)
+			found->next->next->prev = found->prev;
+		test->zleft = test->zleft + sizeof(*found) + sizeof(*found);
+		if (!found->prev->prev && !found->prev->next) {
+			printf("Vider la ZZZZZZZZZZZZZZZZZZZZZZZZZONOOOOONNNNE\n");
+			//free_zone(test);
+		}
+	}
+	else {
+		if (found->prev && found->prev->empty == 1) {
+			found->prev->next = found->next;
+			found->prev->size = found->prev->size + found->size;
+			found->next->prev = found->prev;
+			test->zleft = test->zleft + sizeof(*found);
+		}
+		if (found->next && found->next->empty == 1) {
+
+			found->prev->next = found->next;
+			found->next->prev = found->prev;
+			found->next->size = found->next->size + found->size;
+			test->zleft = test->zleft + sizeof(*found);
+		}
+	}
+}
+
+void		free(void *ptr) {
+
+	t_zone	*test;
+	t_head	*found;
+
+	found = locate(g_e.tiny, &test, ptr);
+	if (found) {
+		printf("found->size = %zu\n", found->size);
+		found->empty = 1;
+		check_fusion(test, found);
+	}
+
+}
+
+t_head		*parse_ts(t_zone *begin, void *ptr) {
+
+	t_zone	*zcur;
+	t_head	*hcur;
+
+	zcur = begin;
+	while (zcur) {
+		hcur = zcur->entry;
+		while (hcur) {
+			if (hcur->addr == ptr) {
+				hcur->empty = 1;
+
+				list_find_end(hcur)->size = zcur->zleft;
+				//zcur->zleft = zcur->zleft + hcur->size;
+				return hcur;
+			}
+			hcur = hcur->next;
+		}
+		zcur = zcur->next;
+	}
+	return NULL;
+}
+
 /*
    void		free(void *ptr) {
 

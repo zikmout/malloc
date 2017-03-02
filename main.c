@@ -7,9 +7,9 @@
 int main(void) {
 
 	init_ts(&g_e.tiny, TZMAX_SIZE);
-	init_ts(&g_e.small, SZMAX_SIZE);
+	//init_ts(&g_e.small, SZMAX_SIZE);
 	printf("g_e.tiny->addr => %p\n", g_e.tiny);
-	printf("g_e.small->addr => %p\n", g_e.small);
+	//printf("g_e.small->addr => %p\n", g_e.small);
 	//printf("initial zone->zleft => %zu\n", g_e.tiny->zleft);
 
 	//malloc(4000);
@@ -17,39 +17,31 @@ int main(void) {
 	//printf("malloc de 2000 return ======>>> %p\n", malloc(2000));
 	//printf("malloc de 96 return ======>>> %p\n", malloc(96));
 
-	//void *rea1 = NULL;
-	//void *rea2 = NULL;
-	//void *rea3 = NULL;
+	void *rea1 = NULL;
+	void *rea2 = NULL;
+	void *rea3 = NULL;
+	void *rea4 = NULL;
 
-	malloc(4000);
-	malloc(4000);
+	rea1 = malloc(100);
+	//print_zone(g_e.tiny);
+	rea2 = malloc(200);
+	rea3 = malloc(300);
+	rea4 = malloc(400);
 
-	print_zone(g_e.tiny);
-	malloc(8);
-	malloc(1);
-	//malloc(4000);
-
-	//malloc(4000);
-	//malloc(4008);
-	//rea1 = malloc(1);
-	//rea2 = malloc(50);
-	//rea3 = malloc(40);
-
-	//free(rea1);
-	//free(rea2);
-	//free(rea3);
-
+	free(rea1);
+	free(rea2);
+	free(rea3);
+	free(rea4);
 	//ptr = malloc(3900);
 
 	//rea = realloc(ptr, 4001);
 
 	//free(rea);
-	print_zone(g_e.tiny);
 
 	//malloc(3333);
 	//malloc(4002);
 
-	//print_zone(g_e.tiny);
+	print_zone(g_e.tiny);
 	//print_zone(g_e.small);
 	/* TEST LOCATE FUNCTION
 	void *ptrl;

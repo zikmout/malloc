@@ -1,10 +1,10 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 # define PAGE_SIZE getpagesize()
-# define TMAX_SIZE 4056 // 4096 -  40
+# define TMAX_SIZE (size_t)4056 // 4096 -  40
 //# define TMAX_SIZE 992 // 1024 - 32
 # define TNB 2048
-# define TZMAX_SIZE (size_t)(4 * TNB - 24 - 40) // 8192 - 24= 8136
+# define TZMAX_SIZE (size_t)(4 * TNB) // 8192 - 24= 8136
 //# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
 # define SMAX_SIZE 131040 // 131072 - 32 - 24
@@ -47,7 +47,7 @@ struct s_env
 
 t_env g_e;
 
-void	init_ts(t_zone **zone, size_t zone_size);
+t_zone	*init_ts(t_zone **zone, size_t zone_size);
 void	*malloc(size_t size);
 void	print_zone(t_zone *begin);
 void	*new_zone_alloc(t_zone **zcur, size_t size);
