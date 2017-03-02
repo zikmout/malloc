@@ -74,6 +74,7 @@ void		init_ts(t_zone **begin, size_t zone_size) {
 	head->empty = 1;
 	head->size = zone_size;
 	head->next = NULL;
+	head->prev = NULL;
 
 	zone->entry = head;
 	zone->zleft = zone_size;
@@ -94,6 +95,7 @@ void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size) {
 	end->size = (*zcur)->zleft;
 	end->empty = 1;
 	end->next = NULL;
+	end->prev = (*hcur);
 
 	(*hcur)->empty = 0;
 	(*hcur)->size = size;
@@ -177,7 +179,8 @@ void		print_zone(t_zone *begin) {
 			printf("     cur->addr => %p\n", cur->addr);
 			printf("     cur->empty => %d\n", cur->empty);
 			printf("     cur->size => %zu\n", cur->size);
-			printf("     cur->next => %p\n\n", cur->next);
+			printf("     cur->next => %p\n", cur->next);
+			printf("     cur->prev => %p\n\n", cur->prev);
 			cur = cur->next;
 		}
 		nb = nb + 1;

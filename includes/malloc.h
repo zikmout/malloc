@@ -1,15 +1,15 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 # define PAGE_SIZE getpagesize()
-# define TMAX_SIZE 4064 // 4096 -  32
+# define TMAX_SIZE 4056 // 4096 -  40
 //# define TMAX_SIZE 992 // 1024 - 32
 # define TNB 2048
-# define TZMAX_SIZE (size_t)(4 * TNB - 24 - 32) // 8192 - 24= 8136
+# define TZMAX_SIZE (size_t)(4 * TNB - 24 - 40) // 8192 - 24= 8136
 //# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
 # define SMAX_SIZE 131040 // 131072 - 32 - 24
 # define SNB 128
-# define SZMAX_SIZE (size_t)((SMAX_SIZE + 32) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
+# define SZMAX_SIZE (size_t)((SMAX_SIZE + 40) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
 
 //# define align4(x) (((((x)-1)>>2)<<2)+4) // 32bit architecture
 #include <unistd.h>
@@ -24,6 +24,7 @@ struct s_head
 	void	*addr;  // 8 bytes
 	int		empty;  // 4 bytes (aligned with 8 bytes)
 	size_t	size;	// 8 bytes
+	t_head	*prev;	// 8 bytes
 	t_head	*next;	// 8 bytes
 };
 
