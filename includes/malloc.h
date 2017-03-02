@@ -1,10 +1,10 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 # define PAGE_SIZE getpagesize()
-# define TMAX_SIZE 4040 // 1024 - 32 - 24
+# define TMAX_SIZE 4064 // 4096 -  32
 //# define TMAX_SIZE 992 // 1024 - 32
 # define TNB 2048
-# define TZMAX_SIZE (size_t)4 * TNB
+# define TZMAX_SIZE (size_t)(4 * TNB - 24) // 8192 - 24 = 8136
 //# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
 # define SMAX_SIZE 131040 // 131072 - 32 - 24
