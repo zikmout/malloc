@@ -64,4 +64,5 @@ void	check_fusion(t_zone *test, t_head *found);
 void	init_all(size_t size);
 
 t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
+t_head	*locate_head(t_head *head, void *ptr);
 #endif

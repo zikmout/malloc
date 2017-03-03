@@ -146,9 +146,10 @@ t_head		*parse_large(t_head *begin, void *ptr) {
 void		*malloc_large(size_t size) {
 
 	t_head	*hcur;
+	t_head	*tmp;
 	void	*ptr;
 
-	ptr = mmap(NULL, size + 32, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	ptr = mmap(NULL, size + sizeof(*hcur), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 
 	hcur = ptr;
 	hcur->addr = hcur + sizeof(*hcur);
@@ -156,11 +157,15 @@ void		*malloc_large(size_t size) {
 	hcur->size = size;
 	hcur->next = NULL;
 
-	if (g_e.large == NULL)
+	if (g_e.large == NULL) {
 		g_e.large = hcur;
-	else
-		list_find_end(g_e.large)->next = hcur;
-
+		hcur->prev = NULL;
+	}
+	else {
+		tmp = list_find_end(g_e.large);
+		tmp->next = hcur;
+		hcur->prev = tmp;
+	}
 	return hcur->addr;
 }
 
@@ -252,12 +257,41 @@ void		free(void *ptr) {
 		check_fusion(test, found);
 		return ;
 	}
-	found = g_e.large;
-	while (found) {
-		if (found->addr == ptr) {
-			printf("found large ptr = %p and size = %zu\n", ptr, found->size);
-			return ;
+	found = locate_head(g_e.large, ptr);
+	if (found) {
+		printf("found large ptr = %p and size = %zu\n", ptr, found->size);
+		if (found->prev && found->next) {
+			found->prev->next = found->next;
+			found->next->prev = found->prev;
+			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
 		}
-		found = found->next;
+		else if (found->prev && !found->next) {
+			found->prev->next = NULL;
+			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+		}
+		else if (!found->prev && found->next) {
+			found->next->prev = NULL;
+			g_e.large = found->next;
+			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+
+		}
+		else if (!found->prev && !found->next) {
+			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+			g_e.large = NULL;
+		}
 	}
+}
+
+t_head		*locate_head(t_head *head, void *ptr) {
+
+	t_head	*hcur;
+
+	hcur = head;
+	while (hcur) {
+		if (hcur->addr == ptr) {
+			return hcur;
+		}
+		hcur = hcur->next;
+	}
+	return NULL;
 }

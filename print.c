@@ -53,7 +53,8 @@ void		print_large(t_head *begin) {
 		printf("*LARGEhcur->addr => %p\n", hcur->addr);
 		printf("*LARGEhcur->empty => %d\n", hcur->empty);
 		printf("*LARGEhcur->size => %zu\n", hcur->size);
-		printf("*LARGEhcur->next => %p\n\n", hcur->next);
+		printf("*LARGEhcur->next => %p\n", hcur->next);
+		printf("*LARGEhcur->prev => %p\n\n", hcur->prev);
 		hcur = hcur->next;
 		nb = nb + 1;
 	}

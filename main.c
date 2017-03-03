@@ -8,20 +8,20 @@ int main(void) {
 
 
 	void *rea1 = NULL;
-	//void *rea2 = NULL;
-	//void *rea3 = NULL;
+	void *rea2 = NULL;
+	void *rea3 = NULL;
 	//void *rea4 = NULL;
 
 	rea1 = malloc(1000000);
-	//rea2 = malloc(110000);
-	//rea3 = malloc(120000);
+	rea2 = malloc(1100000);
+	rea3 = malloc(1200000);
 	//free(rea3);
 	//rea3 = malloc(90000);
 	//rea4 = malloc(130000);
 
 	free(rea1);
-	//free(rea2);
-	//free(rea3);
+	free(rea2);
+	free(rea3);
 	//free(rea4);
 	//ptr = malloc(3900);
 	//rea3 = malloc(90000);
