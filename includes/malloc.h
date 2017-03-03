@@ -17,23 +17,23 @@
 #include <sys/mman.h>
 #include <stdbool.h>
 #include "../libft/libft.h"
-//word = 8 bytes (64bit architecture)
+
 typedef struct s_head t_head;
 struct s_head
 {
-	void	*addr;  // 8 bytes
-	int		empty;  // 4 bytes (aligned with 8 bytes)
-	size_t	size;	// 8 bytes
-	t_head	*prev;	// 8 bytes
-	t_head	*next;	// 8 bytes
+	void	*addr;
+	int		empty;
+	size_t	size;
+	t_head	*prev;
+	t_head	*next;
 };
 
 typedef struct s_zone t_zone;
 struct s_zone
 {
-	t_head	*entry; // 8 bytes
-	size_t	zleft;  // 8 bytes
-	t_zone	*next;	// 8 bytes
+	t_head	*entry;
+	size_t	zleft;
+	t_zone	*next;
 };
 
 
@@ -57,7 +57,6 @@ t_head	*list_find_end(t_head *begin);
 void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
 t_head	*parse_large(t_head *begin, void *ptr);
 void	free(void *ptr);
-void	*realloc_large(void *ptr, size_t size);
 
 int		free_zone(t_zone *to_free, size_t zone_size);
 void	check_fusion(t_zone *test, t_head *found);

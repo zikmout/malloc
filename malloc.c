@@ -74,71 +74,43 @@ void		*realloc(void *ptr, size_t size) {
 
 	t_zone	*test;
 	t_head	*found;
+	void	*ret;
+	size_t	old_size;
 
 	printf("******** REALLOC of pointer -> %p for size %zu\n", ptr, size);
+	if (ptr == NULL)
+		return malloc(size);
+
 	found = locate(g_e.tiny, &test, ptr);
-	if (found && test) {
-		printf("Its a tiny\n");
-		if (found->size >= size) {
-			found->empty = (int)size;
-			return found->addr;
-		}
-		else if (found->size < size) {
-			free(ptr);
-			return malloc(size);
-		}
-		return NULL;
+	if (!found)
+		found = locate(g_e.small, &test, ptr);
+	if (!found) {
+		found = locate_head(g_e.large, ptr);
 	}
-	/*
-	   found = locate(g_e.small, &test, ptr);
-	   if (found && test) {
-	   printf("Its a small\n");
-	   return NULL;
-	   }
-	   */
-	return NULL;
-}
+	if (!found)
+		return NULL;
 
-t_head		*parse_large(t_head *begin, void *ptr) {
+	(found && found->empty != 0) ? (old_size = (size_t)found->empty) : (old_size = found->size);
 
-	t_head	*hcur;
-	t_head	*hcur_prev;
-	t_head	*tmp;
-
-	tmp = NULL;
-	hcur_prev = NULL;
-	hcur = begin;
-	while (hcur) {
-		if (hcur->addr == ptr) {
-			if (hcur_prev != NULL && hcur->next != NULL) {
-				printf("(middle) HCUR PREV ----> %zu\n", hcur_prev->size);
-				hcur_prev->next = hcur->next;
-				printf("Retour mmap %d\n", munmap((void *)(hcur), hcur->size + sizeof(*hcur)));
-				return NULL;
+	if (found && test) {
+		if (found && size == 0) {
+			free(ptr);
+			return NULL;
+		}
+		else if (found && size > 0) {
+			if (found->size >= size) {
+				found->empty = (int)size;
+				return found->addr;
 			}
-			else if (hcur->next == NULL) {
-				printf("(fin) HCUR SIZE ----> %zu\n", hcur->size);
-				if (hcur_prev == NULL) {
-					printf("Retour mmap %d\n", munmap((void *)(g_e.large), hcur->size + sizeof(*hcur)));
-					g_e.large = NULL;
-					return NULL;
-				}
-				else {
-					hcur_prev->next = NULL;
-					printf("Retour mmap %d\n", munmap((void *)(hcur), hcur->size + sizeof(*hcur)));
-					return NULL;
-				}
-				return NULL;
-			}
-			else {
-				printf("(debut) HCUR SIZE ----> %zu\n", hcur->size);
-				g_e.large = hcur->next;
-				printf("Retour mmap %d\n", munmap((void *)(hcur), hcur->size + sizeof(*hcur)));
-				return NULL;
+			else if (found->size < size) {
+				ret = malloc(size);
+				ft_memcpy(ret, found->addr, old_size);
+				free(found->addr);
+				return ret;
 			}
 		}
-		hcur_prev = hcur;
-		hcur = hcur->next;
+		else
+			return NULL;
 	}
 	return NULL;
 }
@@ -167,14 +139,6 @@ void		*malloc_large(size_t size) {
 		hcur->prev = tmp;
 	}
 	return hcur->addr;
-}
-
-void		*realloc_large(void *ptr, size_t size) {
-
-	size = 35;
-	ptr = NULL;
-
-	return NULL;
 }
 
 t_head		*locate(t_zone *begin, t_zone **head, void *ptr) {
