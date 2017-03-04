@@ -1,5 +1,36 @@
 #include "libft/libft.h"
 #include "includes/malloc.h"
+#include "ft_printf/includes/printf.h"
+
+void	show_alloc_mem() {
+
+		t_head *cur;
+
+		if (g_e.tiny) {
+			cur = g_e.tiny->entry;
+			ft_printf("TINY: %p\n", g_e.tiny);
+			while (cur) {
+				ft_printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
+				cur = cur->next;
+			}
+		}
+		if (g_e.small) {
+			cur = g_e.small->entry;
+			ft_printf("SMALL: %p\n", g_e.small);
+			while (cur) {
+				ft_printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
+				cur = cur->next;
+			}
+		}
+		if (g_e.large) {
+			cur = g_e.large;
+			ft_printf("LARGE: %p\n", g_e.large);
+			while (cur) {
+				ft_printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
+				cur = cur->next;
+			}
+		}
+}
 
 void		print_zone(t_zone *begin) {
 
@@ -85,6 +116,7 @@ t_zone		*init_ts(t_zone **begin, size_t zone_size) {
 	zone = ptr;
 
 	head = ptr + sizeof(*(*begin));
+	//head->addr = head + sizeof(*head);
 	head->addr = ptr + sizeof(*zone) + sizeof(*head);//head + sizeof(*head);
 	head->empty = 1;
 	head->size = zone_size - sizeof(*zone) - sizeof(*head);
@@ -97,7 +129,7 @@ t_zone		*init_ts(t_zone **begin, size_t zone_size) {
 
 	if (*begin)
 	{
-		write(1, "--NewZone--\n", 12);
+		//write(1, "--NewZone--\n", 12);
 		return zone;
 	}
 	*begin = zone;

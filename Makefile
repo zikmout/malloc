@@ -1,10 +1,26 @@
-NAME = malloc
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ssicard <marvin@42.fr>                     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2017/03/04 11:35:04 by ssicard           #+#    #+#              #
+#    Updated: 2017/03/04 16:31:51 by ssicard          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+ifeq ($(HOSTTYPE),)
+	    HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
+NAME = libft_malloc_$(HOSTTYPE).so
 
 CC = gcc
 
 FLAGS = -Wall -Werror -Wextra
 
-LIB = libft/libft.a
+LIB = libft/libft.a ft_printf/libftprintf.a
 
 
 SRC =   main.c \
@@ -18,6 +34,7 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
+
 	make -C libft
 	@echo "Compiling $(NAME)"
 	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIB)

@@ -1,15 +1,15 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 # define PAGE_SIZE getpagesize()
-# define TMAX_SIZE (size_t)4056 // 4096 -  40
-//# define TMAX_SIZE 992 // 1024 - 32
-# define TNB 2048
-# define TZMAX_SIZE (size_t)(4 * TNB) // 8192 - 24= 8136
-//# define TZMAX_SIZE (size_t)((TMAX_SIZE + 32) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
+//# define TMAX_SIZE (size_t)4056 // 4096 -  40
+# define TMAX_SIZE (size_t)984 // 1024 - 40
+# define TNB (size_t)2048
+//# define TZMAX_SIZE (size_t)(4 * TNB) // 8192 - 24= 8136
+# define TZMAX_SIZE (size_t)((TMAX_SIZE) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
 # define SMAX_SIZE (size_t)131032 // 131072 - 32 - 24
-# define SNB 128
-# define SZMAX_SIZE (size_t)((SMAX_SIZE + 40) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
+# define SNB (size_t)128
+# define SZMAX_SIZE (size_t)((SMAX_SIZE) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
 
 //# define align4(x) (((((x)-1)>>2)<<2)+4) // 32bit architecture
 #include <unistd.h>
@@ -17,6 +17,7 @@
 #include <sys/mman.h>
 #include <stdbool.h>
 #include "../libft/libft.h"
+#include "../ft_printf/includes/printf.h"
 
 typedef struct s_head t_head;
 struct s_head
@@ -58,6 +59,7 @@ void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
 t_head	*parse_large(t_head *begin, void *ptr);
 void	free(void *ptr);
 
+void	show_alloc_mem();
 int		free_zone(t_zone *to_free, size_t zone_size);
 void	check_fusion(t_zone *test, t_head *found);
 void	init_all(size_t size);
