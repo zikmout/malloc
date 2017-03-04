@@ -6,7 +6,7 @@
 #    By: ssicard <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/04 11:35:04 by ssicard           #+#    #+#              #
-#    Updated: 2017/03/04 16:31:51 by ssicard          ###   ########.fr        #
+#    Updated: 2017/03/04 18:34:22 by ssicard          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,8 @@ $(NAME): $(OBJ)
 
 	make -C libft
 	@echo "Compiling $(NAME)"
-	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIB)
+	@$(CC) $(FLAGS) -shared -o $(NAME) $(OBJ) $(LIB)
+	ln -s $(NAME) libft_malloc.so
 
 %.o: %.c $@
 	@$(CC) $(FLAGS) -c $<
@@ -47,10 +48,12 @@ clean:
 	@make -C libft clean
 	@echo "Deleting objects of the library"
 	@rm -rf $(OBJ)
+	@rm -f libft_malloc.so
 	@echo "Objecting deleting....."
 
 fclean: clean
 	@make -C libft fclean
+	@rm -f libft_malloc.so
 	@echo "Deleting the lib"
 	@rm -rf $(NAME)
 	@echo "delete of $(NAME)"

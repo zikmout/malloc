@@ -5,11 +5,12 @@
 # define TMAX_SIZE (size_t)984 // 1024 - 40
 # define TNB (size_t)2048
 //# define TZMAX_SIZE (size_t)(4 * TNB) // 8192 - 24= 8136
-# define TZMAX_SIZE (size_t)((TMAX_SIZE) * TNB) // 1024 * 2048 = 2 097 152 (= 2Mb)
+# define TZMAX_SIZE (size_t)((TMAX_SIZE) * PAGE_SIZE) // 1024 * 2048 = 2 097 152 (= 2Mb)
 
-# define SMAX_SIZE (size_t)131032 // 131072 - 32 - 24
+# define SMAX_SIZE (size_t)4056 // 131072 - 32 - 24
+//# define SMAX_SIZE (size_t)131032 // 131072 - 32 - 24
 # define SNB (size_t)128
-# define SZMAX_SIZE (size_t)((SMAX_SIZE) * SNB) // 131072 * 128 = 16 777 215 (= 16Mb)
+# define SZMAX_SIZE (size_t)((SMAX_SIZE) * PAGE_SIZE * 131072) // 131072 * 128 = 16 777 215 (= 16Mb)
 
 //# define align4(x) (((((x)-1)>>2)<<2)+4) // 32bit architecture
 #include <unistd.h>

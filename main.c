@@ -7,13 +7,13 @@
 
 int main(void) {
 
-	ft_printf("Ttransaction\n");
-	ft_printf("Ttransaction\n");
-	ft_printf("Ttransaction\n");
-	ft_printf("Ttranstctio %d\n", 58);
+	//ft_printf("Ttransaction\n");
+	//ft_printf("Ttransaction\n");
+	//ft_printf("Ttransaction\n");
+	//ft_printf("Ttranstctio %d\n", 58);
 
 
-
+/*
 	void *rea1 = NULL;
 	void *rea2 = NULL;
 	void *rea3 = NULL;
@@ -25,7 +25,7 @@ int main(void) {
 	void *rea9 = NULL;
 	void *rea10 = NULL;
 	void *rea11 = NULL;
-/*	void *rea12 = NULL;
+	void *rea12 = NULL;
 	void *rea13 = NULL;
 	void *rea14 = NULL;
 	void *rea15 = NULL;
@@ -39,7 +39,7 @@ int main(void) {
 	void *rea23 = NULL;
 	void *rea24 = NULL;
 	void *rea25 = NULL;
-*/
+
 	rea1 = malloc(128);
 	rea2 = malloc(320);
 	rea3 = malloc(320);
@@ -51,7 +51,7 @@ int main(void) {
 	rea9 = malloc(320);
 	rea10 = malloc(320);
 	rea11 = malloc(320);
-/*	rea12 = malloc(320);
+	rea12 = malloc(320);
 	rea13 = malloc(320);
 	rea14 = malloc(320);
 	rea15 = malloc(320);
@@ -65,13 +65,13 @@ int main(void) {
 	rea23 = malloc(256);
 	rea24 = malloc(256);
 	rea25 = malloc(256);
-*/
+
 	free(rea1);
 	free(rea2);
 	free(rea3);
 	free(rea4);
 	free(rea5);
-/*	free(rea6);
+	free(rea6);
 	free(rea7);
 	free(rea8);
 	free(rea9);
@@ -91,6 +91,7 @@ int main(void) {
 	free(rea23);
 	free(rea24);
 	free(rea25);
+	show_alloc_mem();
 
 */
 	//rea1 = malloc(1000000);
@@ -112,7 +113,6 @@ int main(void) {
 	//rea = realloc(ptr, 4001);
 
 	//free(rea);
-	show_alloc_mem();
 
 	//print_zone(g_e.tiny);
 	//print_zone(g_e.small);

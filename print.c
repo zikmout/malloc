@@ -8,25 +8,25 @@ void	show_alloc_mem() {
 
 		if (g_e.tiny) {
 			cur = g_e.tiny->entry;
-			ft_printf("TINY: %p\n", g_e.tiny);
+			printf("TINY: %p\n", g_e.tiny);
 			while (cur) {
-				ft_printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
+				printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
 				cur = cur->next;
 			}
 		}
 		if (g_e.small) {
 			cur = g_e.small->entry;
-			ft_printf("SMALL: %p\n", g_e.small);
+			printf("SMALL: %p\n", g_e.small);
 			while (cur) {
-				ft_printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
+				printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
 				cur = cur->next;
 			}
 		}
 		if (g_e.large) {
 			cur = g_e.large;
-			ft_printf("LARGE: %p\n", g_e.large);
+			printf("LARGE: %p\n", g_e.large);
 			while (cur) {
-				ft_printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
+				printf("%p - %p : %zu octets\n", cur->addr, cur->addr + cur->size, cur->size);
 				cur = cur->next;
 			}
 		}
@@ -100,7 +100,7 @@ void		init_all(size_t size) {
 
 	if (!g_e.tiny && zone_size == TZMAX_SIZE)
 		init_ts(&g_e.tiny, TZMAX_SIZE);
-	else if (!g_e.small && zone_size == SZMAX_SIZE)
+	if (!g_e.small && zone_size == SZMAX_SIZE)
 		init_ts(&g_e.small, SZMAX_SIZE);
 }
 

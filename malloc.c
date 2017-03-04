@@ -8,7 +8,7 @@ void		*new_zone_alloc(t_zone **zcur, size_t size) {
 	//write(1, "ZZ*****-----> debug\n", 21);
 	(size <= TMAX_SIZE) ? (zone_size = TZMAX_SIZE) : (zone_size = SZMAX_SIZE);
 	(*zcur)->next = init_ts(zcur, zone_size);
-	//print_zone(g_e.tiny);
+	//print_zone(g_e.small);
 	new_alloc_end(&(*zcur)->next, &((*zcur)->next->entry), size);
 	return (((*zcur)->next)->entry->addr);
 }
@@ -255,24 +255,24 @@ void		free(void *ptr) {
 	}
 	found = locate_head(g_e.large, ptr);
 	if (found) {
-		printf("found large ptr = %p and size = %zu\n", ptr, found->size);
+		//printf("found large ptr = %p and size = %zu\n", ptr, found->size);
 		if (found->prev && found->next) {
 			found->prev->next = found->next;
 			found->next->prev = found->prev;
-			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+			munmap(found, found->size + sizeof(*found));
 		}
 		else if (found->prev && !found->next) {
 			found->prev->next = NULL;
-			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+			munmap(found, found->size + sizeof(*found));
 		}
 		else if (!found->prev && found->next) {
 			found->next->prev = NULL;
 			g_e.large = found->next;
-			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+			munmap(found, found->size + sizeof(*found));
 
 		}
 		else if (!found->prev && !found->next) {
-			printf("Retour munmap = %d\n", munmap(found, found->size + sizeof(*found)));
+			munmap(found, found->size + sizeof(*found));
 			g_e.large = NULL;
 		}
 	}
