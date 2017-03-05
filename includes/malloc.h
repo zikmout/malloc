@@ -64,9 +64,14 @@ t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
 t_head	*locate_head(t_head *head, void *ptr);
 
 /* free_realloc.c */
-void	*realloc(void *ptr, size_t size);
-int		free_zone(t_zone *to_free, size_t zone_size);
+void	check_fusion_exec(t_zone *test, t_head *found);
 void	check_fusion(t_zone *test, t_head *found);
+void	free_exec(t_head *found);
 void	free(void *ptr);
 void	*new_zone_alloc(t_zone **zcur, size_t size);
+
+/* free_realloc2.c */
+void	*realloc_exec1(size_t s, size_t old_s, void *ret, t_head *found);
+t_head	*try_find(t_zone *test, void *ptr);
+void	*realloc(void *ptr, size_t size);
 #endif
