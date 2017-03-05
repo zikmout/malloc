@@ -50,7 +50,7 @@ struct s_env
 t_env g_e;
 
 /* print.c */
-void	show_tiny_small(void);
+size_t	show_tiny_small(size_t counter);
 void	show_alloc_mem(void);
 t_head	*list_find_end(t_head *begin);
 void	init_all(size_t size);

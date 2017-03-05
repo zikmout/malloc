@@ -6,7 +6,7 @@
 /*   By: ssicard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 08:43:04 by ssicard           #+#    #+#             */
-/*   Updated: 2017/03/05 08:43:25 by ssicard          ###   ########.fr       */
+/*   Updated: 2017/03/05 09:48:05 by ssicard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "includes/malloc.h"
 #include "ft_printf/includes/printf.h"
 
-void		show_tiny_small(void)
+size_t		show_tiny_small(size_t counter)
 {
 	t_head	*cur;
 
@@ -26,6 +26,7 @@ void		show_tiny_small(void)
 		{
 			ft_printf("%p - %p : %zu octets\n", cur->addr, \
 					cur->addr + cur->size, cur->size);
+			counter = counter + cur->size;
 			cur = cur->next;
 		}
 	}
@@ -37,16 +38,20 @@ void		show_tiny_small(void)
 		{
 			ft_printf("%p - %p : %zu octets\n", cur->addr, \
 					cur->addr + cur->size, cur->size);
+			counter = counter + cur->size;
 			cur = cur->next;
 		}
 	}
+	return counter;
 }
 
 void		show_alloc_mem(void)
 {
-	t_head *cur;
+	t_head	*cur;
+	size_t	counter;
 
-	show_tiny_small();
+	counter = 0;
+	counter = show_tiny_small(counter);
 	if (g_e.large)
 	{
 		cur = g_e.large;
@@ -55,9 +60,11 @@ void		show_alloc_mem(void)
 		{
 			ft_printf("%p - %p : %zu octets\n", cur->addr, \
 					cur->addr + cur->size, cur->size);
+			counter = counter + cur->size;
 			cur = cur->next;
 		}
 	}
+	ft_printf("Total : %zu octets\n", counter);
 }
 
 t_head		*list_find_end(t_head *begin)
