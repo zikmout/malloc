@@ -6,7 +6,7 @@
 #    By: ssicard <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/04 11:35:04 by ssicard           #+#    #+#              #
-#    Updated: 2017/03/04 18:34:22 by ssicard          ###   ########.fr        #
+#    Updated: 2017/03/05 08:30:51 by ssicard          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ LIB = libft/libft.a ft_printf/libftprintf.a
 
 SRC =   main.c \
 		malloc.c \
-		print.c
+		print.c \
+		free_realloc.c
 
 OBJ = $(SRC:.c=.o)
 

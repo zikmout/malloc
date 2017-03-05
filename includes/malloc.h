@@ -49,22 +49,24 @@ struct s_env
 
 t_env g_e;
 
-t_zone	*init_ts(t_zone **zone, size_t zone_size);
-void	*malloc(size_t size);
-void	print_zone(t_zone *begin);
-void	*new_zone_alloc(t_zone **zcur, size_t size);
-void	*malloc_large(size_t size);
-void	print_large(t_head *begin);
+/* print.c */
+void	show_tiny_small(void);
+void	show_alloc_mem(void);
 t_head	*list_find_end(t_head *begin);
-void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
-t_head	*parse_large(t_head *begin, void *ptr);
-void	free(void *ptr);
-
-void	show_alloc_mem();
-int		free_zone(t_zone *to_free, size_t zone_size);
-void	check_fusion(t_zone *test, t_head *found);
 void	init_all(size_t size);
+t_zone	*init_ts(t_zone **zone, size_t zone_size);
 
+/* malloc.c */
+void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
+void	*malloc(size_t size);
+void	*malloc_large(size_t size);
 t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
 t_head	*locate_head(t_head *head, void *ptr);
+
+/* free_realloc.c */
+void	*realloc(void *ptr, size_t size);
+int		free_zone(t_zone *to_free, size_t zone_size);
+void	check_fusion(t_zone *test, t_head *found);
+void	free(void *ptr);
+void	*new_zone_alloc(t_zone **zcur, size_t size);
 #endif
