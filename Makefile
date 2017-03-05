@@ -6,7 +6,7 @@
 #    By: ssicard <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/04 11:35:04 by ssicard           #+#    #+#              #
-#    Updated: 2017/03/05 12:01:58 by ssicard          ###   ########.fr        #
+#    Updated: 2017/03/05 12:21:25 by ssicard          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,9 +22,7 @@ FLAGS = -Wall -Werror -Wextra
 
 LIB = libft/libft.a ft_printf/libftprintf.a
 
-
-SRC =   main.c \
-		malloc.c \
+SRC =   malloc.c \
 		print.c \
 		free_realloc.c \
 		free_realloc2.c
@@ -36,20 +34,19 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-
-	make -C libft
+	@make -C libft
+	@$(CC) -shared -o $(NAME) $(OBJ) $(LIB)
 	@echo "Compiling $(NAME)"
-	@$(CC) $(FLAGS) -shared -o $(NAME) $(OBJ) $(LIB)
-	ln -s $(NAME) libft_malloc.so
+	@ln -s $(NAME) libft_malloc.so
 
 %.o: %.c $@
-	@$(CC) $(FLAGS) -c $<
+	@$(CC) -c $(FLAGS) -I./includes/ -I./libft/includes $<
 	@echo "Compilation of $<"
 
 clean:
 	@make -C libft clean
 	@echo "Deleting objects of the library"
-	@rm -rf $(OBJ)
+	@rm -f $(OBJ)
 	@rm -f libft_malloc.so
 	@echo "Objecting deleting....."
 
@@ -57,7 +54,7 @@ fclean: clean
 	@make -C libft fclean
 	@rm -f libft_malloc.so
 	@echo "Deleting the lib"
-	@rm -rf $(NAME)
+	@rm -f $(NAME)
 	@echo "delete of $(NAME)"
 
 re: fclean all
