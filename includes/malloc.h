@@ -58,10 +58,9 @@ t_zone	*init_ts(t_zone **zone, size_t zone_size);
 
 /* malloc.c */
 void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
+void	*malloc_exec(t_zone *zcur, t_head *hcur, size_t size);
 void	*malloc(size_t size);
 void	*malloc_large(size_t size);
-t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
-t_head	*locate_head(t_head *head, void *ptr);
 
 /* free_realloc.c */
 void	check_fusion_exec(t_zone *test, t_head *found);
@@ -74,4 +73,7 @@ void	*new_zone_alloc(t_zone **zcur, size_t size);
 void	*realloc_exec1(size_t s, size_t old_s, void *ret, t_head *found);
 t_head	*try_find(t_zone *test, void *ptr);
 void	*realloc(void *ptr, size_t size);
+t_head	*locate(t_zone *begin, t_zone **head, void *ptr);
+t_head	*locate_head(t_head *head, void *ptr);
+
 #endif

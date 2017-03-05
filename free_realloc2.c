@@ -6,7 +6,7 @@
 /*   By: ssicard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 09:22:52 by ssicard           #+#    #+#             */
-/*   Updated: 2017/03/05 09:28:57 by ssicard          ###   ########.fr       */
+/*   Updated: 2017/03/05 09:37:27 by ssicard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,41 @@ void		*realloc(void *ptr, size_t size)
 		return (realloc_exec1(size, old_size, ret, found));
 	else
 		return (NULL);
+}
+
+t_head		*locate(t_zone *begin, t_zone **head, void *ptr)
+{
+	t_zone	*zcur;
+	t_head	*hcur;
+
+	zcur = begin;
+	while (zcur)
+	{
+		hcur = zcur->entry;
+		while (hcur)
+		{
+			if (hcur->addr == ptr)
+			{
+				*head = zcur;
+				return (hcur);
+			}
+			hcur = hcur->next;
+		}
+		zcur = zcur->next;
+	}
+	return (NULL);
+}
+
+t_head		*locate_head(t_head *head, void *ptr)
+{
+	t_head	*hcur;
+
+	hcur = head;
+	while (hcur)
+	{
+		if (hcur->addr == ptr)
+			return (hcur);
+		hcur = hcur->next;
+	}
+	return (NULL);
 }

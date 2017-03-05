@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   malloc.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssicard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/05 09:37:53 by ssicard           #+#    #+#             */
+/*   Updated: 2017/03/05 09:38:34 by ssicard          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft/libft.h"
 #include "includes/malloc.h"
 
@@ -17,6 +29,21 @@ void		new_alloc_end(t_zone **zcur, t_head **hcur, size_t size)
 	(*hcur)->next = end;
 }
 
+void		*malloc_exec(t_zone *zcur, t_head *hcur, size_t size)
+{
+	if (hcur->next && hcur->empty == 1 && hcur->size >= size)
+	{
+		hcur->empty = (size_t)size;
+		return (hcur->addr);
+	}
+	else if (!hcur->next && zcur->zleft >= size + sizeof(*hcur))
+	{
+		new_alloc_end(&zcur, &hcur, size);
+		return (hcur->addr);
+	}
+	return (NULL);
+}
+
 void		*malloc(size_t size)
 {
 	t_zone	*zcur;
@@ -34,16 +61,9 @@ void		*malloc(size_t size)
 		hcur = zcur->entry;
 		while (hcur)
 		{
-			if (hcur->next && hcur->empty == 1 && hcur->size >= size)
-			{
-				hcur->empty = (size_t)size;
-				return (hcur->addr);
-			}
-			else if (!hcur->next && zcur->zleft >= size + sizeof(*hcur))
-			{
-				new_alloc_end(&zcur, &hcur, size);
-				return (hcur->addr);
-			}
+			if ((hcur->next && hcur->empty == 1 && hcur->size >= size) ||\
+					(!hcur->next && zcur->zleft >= size + sizeof(*hcur)))
+				return (malloc_exec(zcur, hcur, size));
 			hcur = hcur->next;
 		}
 		if (zcur->next == NULL)
@@ -78,40 +98,4 @@ void		*malloc_large(size_t size)
 		hcur->prev = tmp;
 	}
 	return (hcur->addr);
-}
-
-t_head		*locate(t_zone *begin, t_zone **head, void *ptr)
-{
-	t_zone	*zcur;
-	t_head	*hcur;
-	zcur = begin;
-	while (zcur)
-	{
-		hcur = zcur->entry;
-		while (hcur)
-		{
-			if (hcur->addr == ptr)
-			{
-				*head = zcur;
-				return (hcur);
-			}
-			hcur = hcur->next;
-		}
-		zcur = zcur->next;
-	}
-	return (NULL);
-}
-
-t_head		*locate_head(t_head *head, void *ptr)
-{
-	t_head	*hcur;
-
-	hcur = head;
-	while (hcur)
-	{
-		if (hcur->addr == ptr)
-			return (hcur);
-		hcur = hcur->next;
-	}
-	return (NULL);
 }
