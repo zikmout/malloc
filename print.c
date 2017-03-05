@@ -6,7 +6,7 @@
 /*   By: ssicard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 08:43:04 by ssicard           #+#    #+#             */
-/*   Updated: 2017/03/05 09:48:05 by ssicard          ###   ########.fr       */
+/*   Updated: 2017/03/05 11:55:48 by ssicard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,42 @@
 #include "includes/malloc.h"
 #include "ft_printf/includes/printf.h"
 
-size_t		show_tiny_small(size_t counter)
+size_t		show_tiny(size_t counter)
 {
 	t_head	*cur;
 
 	if (g_e.tiny)
 	{
 		cur = g_e.tiny->entry;
-		ft_printf("TINY: %p\n", g_e.tiny);
+		ft_printf("TINY: 0x%X\n", g_e.tiny);
 		while (cur)
 		{
-			ft_printf("%p - %p : %zu octets\n", cur->addr, \
+			ft_printf("0x%X - 0x%X : %zu octets\n", cur->addr, \
 					cur->addr + cur->size, cur->size);
 			counter = counter + cur->size;
 			cur = cur->next;
 		}
 	}
+	return (counter);
+}
+
+size_t		show_small(size_t counter)
+{
+	t_head	*cur;
+
 	if (g_e.small)
 	{
 		cur = g_e.small->entry;
-		ft_printf("SMALL: %p\n", g_e.small);
+		ft_printf("SMALL: 0x%X\n", g_e.small);
 		while (cur)
 		{
-			ft_printf("%p - %p : %zu octets\n", cur->addr, \
+			ft_printf("0x%X - 0x%X : %zu octets\n", cur->addr, \
 					cur->addr + cur->size, cur->size);
 			counter = counter + cur->size;
 			cur = cur->next;
 		}
 	}
-	return counter;
+	return (counter);
 }
 
 void		show_alloc_mem(void)
@@ -51,28 +58,21 @@ void		show_alloc_mem(void)
 	size_t	counter;
 
 	counter = 0;
-	counter = show_tiny_small(counter);
+	counter = show_tiny(counter);
+	counter = show_small(counter);
 	if (g_e.large)
 	{
 		cur = g_e.large;
-		ft_printf("LARGE: %p\n", g_e.large);
+		ft_printf("LARGE: 0x%X\n", g_e.large);
 		while (cur)
 		{
-			ft_printf("%p - %p : %zu octets\n", cur->addr, \
+			ft_printf("0x%X - 0x%X : %zu octets\n", cur->addr, \
 					cur->addr + cur->size, cur->size);
 			counter = counter + cur->size;
 			cur = cur->next;
 		}
 	}
 	ft_printf("Total : %zu octets\n", counter);
-}
-
-t_head		*list_find_end(t_head *begin)
-{
-	if (!begin->next)
-		return (begin);
-	else
-		return (list_find_end(begin->next));
 }
 
 void		init_all(size_t size)

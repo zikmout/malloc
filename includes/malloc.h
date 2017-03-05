@@ -1,18 +1,10 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 # define PAGE_SIZE getpagesize()
-//# define TMAX_SIZE (size_t)4056 // 4096 -  40
-# define TMAX_SIZE (size_t)984 // 1024 - 40
-# define TNB (size_t)2048
-//# define TZMAX_SIZE (size_t)(4 * TNB) // 8192 - 24= 8136
-# define TZMAX_SIZE (size_t)((TMAX_SIZE) * PAGE_SIZE) // 1024 * 2048 = 2 097 152 (= 2Mb)
-
-# define SMAX_SIZE (size_t)4056 // 131072 - 32 - 24
-//# define SMAX_SIZE (size_t)131032 // 131072 - 32 - 24
-# define SNB (size_t)128
-# define SZMAX_SIZE (size_t)((SMAX_SIZE) * PAGE_SIZE * 131072) // 131072 * 128 = 16 777 215 (= 16Mb)
-
-//# define align4(x) (((((x)-1)>>2)<<2)+4) // 32bit architecture
+# define TMAX_SIZE (size_t)984
+# define TZMAX_SIZE (size_t)((TMAX_SIZE) * PAGE_SIZE)
+# define SMAX_SIZE (size_t)4056
+# define SZMAX_SIZE (size_t)((SMAX_SIZE) * PAGE_SIZE)
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/mman.h>
@@ -50,9 +42,9 @@ struct s_env
 t_env g_e;
 
 /* print.c */
-size_t	show_tiny_small(size_t counter);
+size_t	show_tiny(size_t counter);
+size_t	show_small(size_t counter);
 void	show_alloc_mem(void);
-t_head	*list_find_end(t_head *begin);
 void	init_all(size_t size);
 t_zone	*init_ts(t_zone **zone, size_t zone_size);
 
@@ -61,6 +53,7 @@ void	new_alloc_end(t_zone **zcur, t_head **hcur, size_t size);
 void	*malloc_exec(t_zone *zcur, t_head *hcur, size_t size);
 void	*malloc(size_t size);
 void	*malloc_large(size_t size);
+t_head	*list_find_end(t_head *begin);
 
 /* free_realloc.c */
 void	check_fusion_exec(t_zone *test, t_head *found);

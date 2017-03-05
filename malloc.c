@@ -6,7 +6,7 @@
 /*   By: ssicard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 09:37:53 by ssicard           #+#    #+#             */
-/*   Updated: 2017/03/05 09:38:34 by ssicard          ###   ########.fr       */
+/*   Updated: 2017/03/05 11:55:44 by ssicard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,12 @@ void		*malloc_large(size_t size)
 		hcur->prev = tmp;
 	}
 	return (hcur->addr);
+}
+
+t_head		*list_find_end(t_head *begin)
+{
+	if (!begin->next)
+		return (begin);
+	else
+		return (list_find_end(begin->next));
 }
